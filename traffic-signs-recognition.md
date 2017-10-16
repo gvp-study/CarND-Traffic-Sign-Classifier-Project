@@ -41,15 +41,10 @@ signs data set: The files in pickle format are train.p, valid.p and test.p.
 * The shape of a traffic sign image is (32, 32, 3)
 * The number of unique classes/labels in the data set is 43
 
-####2. Include an exploratory visualization of the dataset.
 
 Here is an exploratory visualization of the data set. It is a bar chart showing how the training data set. The graph clearly shows the uneven distribution of the histogram of the traffic signs. The first sign (SpeedLimit20) has only about 200 samples while the SpeeLimit50 sign has about 2000 samples. There is a huge variation in the sample set for every sign. Training on such a set will help make the classifier robust.
 
 ![alt text][image1]
-
-###Design and Test a Model Architecture
-
-####1. Describe how you preprocessed the image data. What techniques were chosen and why did you choose these techniques? Consider including images showing the output of each preprocessing technique. Pre-processing refers to techniques such as converting to grayscale, normalization, etc. (OPTIONAL: As described in the "Stand Out Suggestions" part of the rubric, if you generated additional data for training, describe why you decided to generate additional data, how you generated the data, and provide example images of the additional data. Then describe the characteristics of the augmented training set like number of images in the set, number of images for each class, etc.)
 
 I decided to keep all 3 channels of the color image instead of converting it to grayscale. I think the color of the sign could be a useful parameter in the classification and could be learned by the neural network.
 To reduce the effects of the lighting on the input vector. I decided to normalize the color images of the traffic signs. I used a simple formula of converting the pixels using the following equation.
@@ -58,8 +53,6 @@ pix = (pix - 128)/128.
 Here is an example of a traffic sign image before and after normalizing.
 
 ![alt text][image2]
-
-####2. Describe what your final model architecture looks like including model type, layers, layer sizes, connectivity, etc.) Consider including a diagram and/or table describing the final model.
 
 ![alt text][image9]
 
@@ -153,11 +146,7 @@ Validation Accuracy = 0.798, 0.843, 0.873, 0.875, 0.890, 0.899, 0.890, 0.886, 0.
 | Softmax				        | 43 outputs   								  |
 
 
-####3. Describe how you trained your model. The discussion can include the type of optimizer, the batch size, number of epochs and any hyperparameters such as learning rate.
-
-To train the model, I used the AdamOptimizer for the type of optimizer. I also used an Epoch size of 20, a batch size of 64 and a convolution KernelSize of 3x3. I also shuffled the training images and the labels (simultaneously) to prevent any correlation to the order in the inputs.
-
-####4. Describe the approach taken for finding a solution and getting the validation set accuracy to be at least 0.93. Include in the discussion the results on the training, validation and test sets and where in the code these were calculated. Your approach may have been an iterative process, in which case, outline the steps you took to get to the final solution and why you chose those steps. Perhaps your solution involved an already well known implementation or architecture. In this case, discuss why you think the architecture is suitable for the current problem.
+To train the model, I used the AdamOptimizer for the type of optimizer. I also used an Epoch size of 20, a batch size of 64 and a convolution KernelSize of 3x3. I kept the learning_rate at 0.001. I also shuffled the training images and the labels (simultaneously) to prevent any correlation to the order in the inputs.
 
 My final model results were:
 * training set accuracy of 0.870
@@ -181,8 +170,6 @@ The first thing to notice about these images are their sizes are very different 
 
 The hardest sign in the sign index 11 (Right-of-way at the next intersection). I suspect this is because there are other signs such as 27 and 20 which have the same triangular shape and color. This sign was the only one which scored less than hundred in the probability for the first guess at 99%. The other four signs seemed to get their first guess probability at 100%.
 
-####2. Discuss the model's predictions on these new traffic signs and compare the results to predicting on the test set. At a minimum, discuss what the predictions were, the accuracy on these new predictions, and compare the accuracy to the accuracy on the test set (OPTIONAL: Discuss the results in more detail as described in the "Stand Out Suggestions" part of the rubric).
-
 Here are the results of the prediction:
 
 | Image			            |     Prediction	        					|
@@ -195,8 +182,6 @@ Here are the results of the prediction:
 
 
 The model was able to correctly guess all 5 of the traffic signs correctly, which gives an accuracy of 100%. This compares favorably to the accuracy on the test set of 100%
-
-####3. Describe how certain the model is when predicting on each of the five new images by looking at the softmax probabilities for each prediction. Provide the top 5 softmax probabilities for each image along with the sign type of each probability. (OPTIONAL: as described in the "Stand Out Suggestions" part of the rubric, visualizations can also be provided such as bar charts)
 
 The code for making predictions on my final model is located in the 16th cell of the Ipython notebook.
 
