@@ -221,5 +221,6 @@ For the fifth image the corresponding 3 guesses were like so;
 | 9.49474983e-03      	| Pedestrians   			      		    |
 | 5.55521229e-09				| DangerousCurveRight							  |
 
-### (Optional) Visualizing the Neural Network (See Step 4 of the Ipython notebook for more details)
-####1. Discuss the visual output of your trained network's feature maps. What characteristics did the neural network use to make classifications?
+**Visualizing the Neural Network (See Step 4 of the Ipython notebook for more details)**
+
+I did not have time to work on this part of the project. I would like to complete it sometime in the coming days.
