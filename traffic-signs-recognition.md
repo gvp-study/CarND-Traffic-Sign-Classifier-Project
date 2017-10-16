@@ -26,14 +26,13 @@ The goals / steps of this project are the following:
 
 ---
 
-**Writeup / README**
+**Code**
 
-You're reading it! and here is a link to my [project code](https://github.com/gvp-study/CarND-Traffic-Sign-Classifier-Project.git)
+This link has my [project code](https://github.com/gvp-study/CarND-Traffic-Sign-Classifier-Project.git)
 
 **Data Set Summary & Exploration**
 
-I used the pandas library to calculate summary statistics of the traffic
-signs data set: The files in pickle format are train.p, valid.p and test.p.
+The files in pickle format are train.p, valid.p and test.p. I used the pandas library to calculate summary statistics of the traffic signs data which is as follows:
 
 * The size of training set is 34799
 * The size of the validation set is 4410
