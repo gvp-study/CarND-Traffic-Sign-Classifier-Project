@@ -63,11 +63,31 @@ Here is an example of a traffic sign image before and after normalizing.
 
 ![alt text][image9]
 
-My final model consists of the following six layers as shown in the figure. Unlike the figure, the inputs in this case are 32x32x3 traffic sign images and the output is a 43 element traffic sign classes.
+My final model consists of the following five main hidden layers as shown in the figure. Unlike the figure, the inputs in this case are 32x32x3 traffic sign images and the output is the 43 element traffic sign classes.
 
-The inputs is the 32x32x3 image which is fed to the first convolutional layer which convolves the image with a 3x3 kernel with a 1x1 stride. This results in a 32x32x64 output. This is in turn fed through the Rectified Linear Units RELUs to add the nonlinear classification functions. The result of the RELUs is then fed to a softmax pooling layer. The output of the first layer is 14x14x6 is then fed to the second layer which has a similar structure and that layer results in a 5x5x16 output. This output is then flattened into a 400 long vector. The third layer is a fully connected neural net with an output vector 120 long. This is fed through a RELU and softmax functions to output 120 inputs to the fourth layer which is similar in structure and produces 84 outputs. These 84 vector is fed into the last layer which classifies the output into the 43 traffic sign classes.
+**Layer 1:** Convolution with a 3x3 kernel. The output shape is 28x28x6.
 
-**Optimizer Type**
+*Activation* RELUs for the nonlinear classification functions
+
+*Pooling* The output of this softmax layer is 14x14x6.
+
+*Layer 2:* Convolution with a 5x5 kernel. The output shape is 10x10x16.
+Activation. RELUs for the nonlinear classification functions
+Pooling. The output shape is 5x5x16.
+Flatten. Using tf.contrib.layers.flatten, we flatten the output shape of the final pooling layer such that it's a 1D vector which has 400 elements.
+
+**Layer 3:** Fully Connected layer. This has 400 outputs.
+
+*Activation* RELUs for the nonlinear classification functions
+
+**Layer 4:** Fully Connected. This has 120 outputs.
+
+*Activation* RELUs for the nonlinear classification functions
+
+**Layer 5:** Fully Connected (Logits). This has 43 outputs.
+
+**Optimizer Types**
+
 I tested the different options for the optimizers. In addition to the original AdamOptimizer, I tried to use GradientDescentOptimizer, RMSPropOptimizer, ProximalGradientDescentOptimizer, MomentumOptimizer. Looking at the rate of convergence of the model, only the RMSPropOptimizer came close to the AdamOptimizer. So, I continued to use the AdamOptimizer. The results are shown below.
 
 No of Epochs = 10
@@ -91,6 +111,7 @@ Results for the ProximalAdagradOptimizer(rate=0.001):
 Validation Accuracy = 0.165, 0.229, 0.273, 0.306, 0.338, 0.357, 0.386, 0.402, 0.417, 0.439
 
 **BatchSize**
+
 I also tried changing the batch size to see if there is any improvement. I found that increasing the batch size was detrimental to the accuracy. Instead decreasing it to a size of 64 improved the accuracy.
 Results for BatchSize = 256 for RMSPropOptimizer(rate=0.001):
 Validation Accuracy = 0.359, 0.580, 0.706, 0.785, 0.787, 0.821, 0.820, 0.846, 0.847, 0.860
@@ -103,6 +124,7 @@ Results for BatchSize = 64 for AdamOptimizer(rate=0.001): Epochs 20
 Validation Accuracy = 0.813, 0.837, 0.859, 0.851, 0.889, 0.859, 0.869, 0.875, 0.880, 0.883, 0.894, 0.902, 0.901, 0.915, 0.901, 0.883, 0.893
 
 **KernelSize**
+
 I also experimented with the size of the first convolution kernel. I started out with the 5x5 kernel and then tested it with the smaller 3x3 kernel. The 3x3 seems to converge to a better accuracy.
 Validation Accuracy = 0.798, 0.843, 0.873, 0.875, 0.890, 0.899, 0.890, 0.886, 0.899, 0.904, 0.906, 0.902, 0.902, 0.89, 0.913, 0.897, 0.888, 0.918, 0.899, 0.914
 
@@ -131,7 +153,6 @@ Validation Accuracy = 0.798, 0.843, 0.873, 0.875, 0.890, 0.899, 0.890, 0.886, 0.
 | Softmax				        | 43 outputs   								  |
 
 
-
 ####3. Describe how you trained your model. The discussion can include the type of optimizer, the batch size, number of epochs and any hyperparameters such as learning rate.
 
 To train the model, I used the AdamOptimizer for the type of optimizer. I also used an Epoch size of 20, a batch size of 64 and a convolution KernelSize of 3x3. I also shuffled the training images and the labels (simultaneously) to prevent any correlation to the order in the inputs.
@@ -149,12 +170,9 @@ I chose the given LeNet solution architecture which recognizes numbers because i
 The steady rise in the accuracy of the model during a typical training from around 0.673 to a final 0.876 in 10 epochs gives me confidence that the neural network is learning to classify the test data into the 43 traffic signs.
 I tried to speed up the learning by increasing the learning rate from 0.001 to 0.01 and the result was not good. The validation accuracy stayed at around 0.05. The value of 0.001 kept the validation accuracy above 0.7 and produced accurate predictions on the test images.
 
-###Test a Model on New Images
-
-####1. Choose five German traffic signs found on the web and provide them in the report. For each image, discuss what quality or qualities might be difficult to classify.
+**Testing the Model on New Images**
 
 Here are five German traffic signs that I found on the web:
-
 
 ![alt text][image4] ![alt text][image5] ![alt text][image6]
 ![alt text][image7] ![alt text][image8]
