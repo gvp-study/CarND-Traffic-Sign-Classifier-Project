@@ -23,6 +23,7 @@ The goals / steps of this project are the following:
 [image7]: ./examples/33.jpg "Traffic Sign 4"
 [image8]: ./examples/38.jpg "Traffic Sign 5"
 [image9]: ./examples/lenet.png "Architecture"
+[image10]: ./examples/classified-signs.png "Classified-signs"
 
 ---
 
@@ -46,8 +47,9 @@ Here is an exploratory visualization of the data set. It is a bar chart showing 
 ![alt text][image1]
 
 I decided to keep all 3 channels of the color image instead of converting it to grayscale. I think the color of the sign could be a useful parameter in the classification and could be learned by the neural network.
-To reduce the effects of the lighting on the input vector. I decided to normalize the color images of the traffic signs. I used a simple formula of converting the pixels using the following equation.
-pix = (pix - 128)/128.
+To reduce the effects of the lighting on the input vector. I decided to normalize the color images of the traffic signs. I used a simple formula of converting the pixels using the following normalizing equation.
+
+        pix = (pix - minpix) * 256/maxpix
 
 Here is an example of a traffic sign image before and after normalizing.
 
@@ -82,43 +84,48 @@ Flatten. Using tf.contrib.layers.flatten, we flatten the output shape of the fin
 
 I tested the different options for the optimizers. In addition to the original AdamOptimizer, I tried to use GradientDescentOptimizer, RMSPropOptimizer, ProximalGradientDescentOptimizer, MomentumOptimizer. Looking at the rate of convergence of the model, only the RMSPropOptimizer came close to the AdamOptimizer. So, I continued to use the AdamOptimizer. The results are shown below.
 
-No of Epochs = 10
-KernelSize = 5x5
 Results for the AdamOptimizer(rate=0.001):
-Validation Accuracy = 0.560, 0.676, 0.721, 0.760, 0.771, 0.812, 0.813, 0.819, 0.831, 0.828
+Validation Accuracy = 0.828
 
 Results for the RMSPropOptimizer(rate=0.001):
-Validation Accuracy = 0.679  0.783, 0.795, 0.832, 0.856, 0.866, 0.871, 0.877, 0.877, 0.882
+Validation Accuracy = 0.882
 
 Results for the ProximalGradientDescentOptimizer(rate=0.001):
-Validation Accuracy = 0.057, 0.054, 0.055, 0.056, 0.101, 0.162, 0.260, 0.334, 0.360, 0.436
+Validation Accuracy = 0.436
 
 Results for the MomentumOptimizer(rate=0.001, momentum=0.9):
-Validation Accuracy = 0.054, 0.054, 0.054, 0.054, 0.054, 0.054, 0.055, 0.054, 0.054, 0.054
+Validation Accuracy = 0.054
 
 Results for the FtrlOptimizer(rate=0.001):
-Validation Accuracy = 0.180, 0.238, 0.304, 0.370, 0.417, 0.448, 0.493, 0.506, 0.543, 0.556
+Validation Accuracy = 0.556
 
 Results for the ProximalAdagradOptimizer(rate=0.001):
-Validation Accuracy = 0.165, 0.229, 0.273, 0.306, 0.338, 0.357, 0.386, 0.402, 0.417, 0.439
+Validation Accuracy = 0.439
 
 **BatchSize**
 
 I also tried changing the batch size to see if there is any improvement. I found that increasing the batch size was detrimental to the accuracy. Instead decreasing it to a size of 64 improved the accuracy.
 Results for BatchSize = 256 for RMSPropOptimizer(rate=0.001):
-Validation Accuracy = 0.359, 0.580, 0.706, 0.785, 0.787, 0.821, 0.820, 0.846, 0.847, 0.860
+Validation Accuracy =  0.860
 Results for BatchSize = 256 for AdamOptimizer(rate=0.001):
-Validation Accuracy = 0.451, 0.673, 0.734, 0.784, 0.788, 0.806, 0.814, 0.816, 0.823, 0.828
-
+Validation Accuracy = 0.828
 Results for BatchSize = 64 for AdamOptimizer(rate=0.001): Epochs 10
-Validation Accuracy = 0.734, 0.821, 0.843, 0.864, 0.868, 0.876, 0.857, 0.824, 0.891, 0.884
+Validation Accuracy = 0.884
 Results for BatchSize = 64 for AdamOptimizer(rate=0.001): Epochs 20
-Validation Accuracy = 0.813, 0.837, 0.859, 0.851, 0.889, 0.859, 0.869, 0.875, 0.880, 0.883, 0.894, 0.902, 0.901, 0.915, 0.901, 0.883, 0.893
+Validation Accuracy =  0.893
 
 **KernelSize**
 
 I also experimented with the size of the first convolution kernel. I started out with the 5x5 kernel and then tested it with the smaller 3x3 kernel. The 3x3 seems to converge to a better accuracy.
-Validation Accuracy = 0.798, 0.843, 0.873, 0.875, 0.890, 0.899, 0.890, 0.886, 0.899, 0.904, 0.906, 0.902, 0.902, 0.89, 0.913, 0.897, 0.888, 0.918, 0.899, 0.914
+Validation Accuracy = 0.914
+
+**Final Parameters**
+No of Epochs = 20
+BatchSize = 32
+KernelSize = 3x3
+Lenet:mu = 0.0
+Lenet:sigma = 0.01
+Learning_rate = 0.001
 
 
 | Layer         		    |     Description	        			|
@@ -131,8 +138,8 @@ Validation Accuracy = 0.798, 0.843, 0.873, 0.875, 0.890, 0.899, 0.890, 0.886, 0.
 | Convolution 5x5     	| 1x1 stride, same padding, outputs 10x10x16 	|
 | RELU					        |								       				  |
 | Max pooling	      	  | 2x2 stride,  outputs 5x5x16   |
-| Flatten   	      	  |  outputs 400                  |
-| Layer3        	      | Input 400, Output 120    									  |
+| Flatten   	      	  | Outputs 400                   |
+| Layer3        	      | Input 400, Output 120    			|
 | Fully connected		    | Input 400   									|
 | Softmax				        | 120 outputs   								|
 | RELU					        |								       				  |
@@ -219,6 +226,12 @@ For the fifth image the corresponding 3 guesses were like so;
 | 9.90505278e-01        | Right-of-way  				    			  |
 | 9.49474983e-03      	| Pedestrians   			      		    |
 | 5.55521229e-09				| DangerousCurveRight							  |
+
+*Classification of the Five Signs*
+
+I display the final results of the classifcation of the five signs as shown below.
+
+![alt text][image10]
 
 **Visualizing the Neural Network (See Step 4 of the Ipython notebook for more details)**
 
