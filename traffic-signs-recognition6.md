@@ -56,19 +56,22 @@ Here is an exploratory visualization of the data set. It is a bar chart showing 
 
 ![alt text][image1]
 
-In the orginal submission I decided to keep all 3 channels of the color image instead of converting it to grayscale. But, according to suggestion from the reviewer and the results of experiments, I decided to convert the color image to a grayscale image. I decided to normalize the color images of the traffic signs. I used a simple formula of converting the pixels using the following normalizing equation.
+In the orginal submission I decided to keep all 3 channels of the color image instead of converting it to grayscale. But, according to suggestion from the reviewer and the results of experiments, I decided to convert the color image to a grayscale image. I also decided to normalize the color images of the traffic signs using a simple formula of converting the pixels using the following equation.
 
         pix = (pix - 128) / 128
 
-In my original submission, I found that the histogram plot of the 43 traffic signs were not even. This could potentially bias the results of the classifier. To reduce this, I added the functions to randomly translate, rotate and brighten the given images of all traffic signs which had low sample counts. The effect of the translate, rotate and brighten on a sample image is shown below.
+In my original submission, I did not add any new training samples and the histogram plot of the 43 traffic signs stayed uneven, potentially biasing the results of the classifier. To reduce this, I added the functions to randomly translate, rotate and brighten the a given image. I then took all the traffic signs which had low sample counts in the histogram. I then randomly sampled these sign training example images and randomly translated, rotated and brightened them. These modified images were then added back into the training samples for that traffic sign. The effect of the translate, rotate and brighten on a sample image is shown below.
 
 ![alt text][image18]
 
-The result of the adding the additional randomly modified images to the histogram is shown below.
+The result of the adding the additional randomly modified images to the histogram is shown below. Note that the histogram now clearly shows that no traffic sign has a count less than 600. I think this helped improve the accuracy of my system.
 
 ![alt text][image16]
 
-My final model consists of the following five main hidden layers as shown in the figure. Unlike the figure, the inputs in this case are 32x32x3 traffic sign images and the output is the 43 element traffic sign classes.
+My final model consists of the following five main hidden layers as shown in the figure. Unlike the figure, the inputs in this case are 32x32x1 traffic sign images and the output is the 43 element traffic sign classes.
+The main change is the input is now a grayscale image unlike the color image in the previous submission. I also changed the first convolution back to a 5x5 kernel.
+
+![alt text][image9]
 
 **Layer 1:** Convolution with a 5x5 kernel. The output shape is 28x28x6.
 
@@ -79,7 +82,7 @@ My final model consists of the following five main hidden layers as shown in the
 *Layer 2:* Convolution with a 5x5 kernel. The output shape is 10x10x16.
 Activation. RELUs for the nonlinear classification functions
 Pooling. The output shape is 5x5x16.
-Flatten. Using tf.contrib.layers.flatten, we flatten the output shape of the final pooling layer such that it's a 1D vector which has 400 elements.
+Flatten. Using the tensorflow function tf.contrib.layers.flatten, we flatten the output shape of the final pooling layer such that it's a 1D vector which has 400 elements.
 
 **Layer 3:** Fully Connected layer. This has 400 outputs.
 
@@ -93,7 +96,7 @@ Flatten. Using tf.contrib.layers.flatten, we flatten the output shape of the fin
 
 **Optimizer Types**
 
-I tested the different options for the optimizers. In addition to the original AdamOptimizer, I tried to use GradientDescentOptimizer, RMSPropOptimizer, ProximalGradientDescentOptimizer, MomentumOptimizer. Looking at the rate of convergence of the model, only the RMSPropOptimizer came close to the AdamOptimizer. So, I continued to use the AdamOptimizer. The results are shown below.
+I tested the different options for the optimizers. In addition to the original AdamOptimizer, I tried to use GradientDescentOptimizer, RMSPropOptimizer, ProximalGradientDescentOptimizer, MomentumOptimizer. Looking at the rate of convergence of the model, only the RMSPropOptimizer came close to the AdamOptimizer. So, I continued to use the AdamOptimizer. The results are shown below. (These are numbers from the old submission)
 
 Results for the AdamOptimizer(rate=0.001):
 Validation Accuracy = 0.828
@@ -131,7 +134,7 @@ I also experimented with the size of the first convolution kernel. I started out
 Validation Accuracy = 0.914
 
 **Final Parameters**
-No of Epochs = 20
+No of Epochs = 64
 BatchSize = 32
 KernelSize = 5x5
 Lenet:mu = 0.0
@@ -163,7 +166,7 @@ Learning_rate = 0.001
 | Softmax				        | 43 outputs   								  |
 
 
-To train the model, I used the AdamOptimizer for the type of optimizer. I also used an Epoch size of 20, a batch size of 64 and a convolution KernelSize of 3x3. I kept the learning_rate at 0.001. I also shuffled the training images and the labels (simultaneously) to prevent any correlation to the order in the inputs.
+To train the model, I used the AdamOptimizer for the type of optimizer. I also used an Epoch size of 20, a batch size of 64 and a convolution KernelSize of 5x5. I kept the learning_rate at 0.001. I also shuffled the training images and the labels (simultaneously) to prevent any correlation to the order in the inputs.
 
 My final model results were:
 * training set accuracy of 0.93
@@ -174,7 +177,7 @@ I did not use an iterative approach as I was short on time.
 
 I chose the given LeNet solution architecture which recognizes numbers because it was based on an input image and seemed to perform well with the classification the input image into 10 numbers.
 The steady rise in the accuracy of the model during a typical training from around 0.28 to a final 0.948 in 64 epochs gives me confidence that the neural network is learning to classify the test data into the 43 traffic signs.
-I tried to speed up the learning by increasing the learning rate from 0.001 to 0.01 and the result was not good. The validation accuracy stayed at around 0.05.
+I tried to speed up the learning by increasing the learning rate from 0.001 to 0.01 and the result was not good.
 
 ![alt text][image15]
 
@@ -242,18 +245,18 @@ For the fifth image the corresponding 3 guesses were like so;
 
 *Classification of the Five Signs*
 
-I display the final results of the classifcation of the five signs as shown below.
+I displayed the final results of the classification of the five signs as shown below. The first image shows the example image. The next 3 images in the row show the results of the classifier arranged in the decreasing order of probablility. The probablility computed is displayed above the signs. The classifier successfully classified all five signs consistently over multiple tests.
 
 ![alt text][image17]
 
 **Visualizing the Neural Network (See Step 4 of the Ipython notebook for more details)**
 
-I used the given and tensorflow functions to display the hidden layers of the CNN graphically as shown below. 
+I used the given and tensorflow functions to display the hidden layers of the CNN graphically as shown below.
 The original sign fed to the CNN is the 3.5TonLimit sign which is shown below.
 
 ![alt text][image14]
 
-The first layer of hidden networks shows that the circular pattern that would be a good classifying feature is detected here in several of the convolution images.
+The first layer of hidden networks shows that the circular pattern that would be a good classifying feature is detected here in several of the convolution weight images. This is a good indicator that the hidden layers are doing the right thing by finding the appropriate features for classification automatically.
 ![alt text][image11]
 The second layer of six images is shown below.
 ![alt text][image12]
